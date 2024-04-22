@@ -2,14 +2,15 @@ const PDFFile = require('../models/pdfFile');
 const path = require('path');
 require('dotenv').config();
 const Sequelize = require('sequelize');
+const { createFileName } = require( '../config/storege' );
 
 const PORT = process.env.PORT || 5000;
 const url = process.env.URL;
 const uploadPDF = async (req, res) => {
   try {
     console.log("req.file", req.file);
-    const fileName = req.file.originalname;
     const { title, description } = req.body;
+    const fileName = createFileName( req.file)
     const fileURL = `${url}/uploads/${fileName}`;
 
     const pdf = await PDFFile.create({ fileName, fileURL, title, description, status: 'Active', isDeleted: false });
