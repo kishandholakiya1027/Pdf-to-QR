@@ -4,13 +4,13 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 
 const PORT = process.env.PORT || 5000;
-
+const url = process.env.URL;
 const uploadPDF = async (req, res) => {
   try {
     console.log("req.file", req.file);
     const fileName = req.file.originalname;
     const { title, description } = req.body;
-    const fileURL = `http://localhost:${PORT}/uploads/${fileName}`;
+    const fileURL = `${url}/uploads/${fileName}`;
 
     const pdf = await PDFFile.create({ fileName, fileURL, title, description, status: 'Active', isDeleted: false });
     res.status(200).json({ success: true, message: 'PDF file uploaded successfully.', fileURL, data: pdf });
