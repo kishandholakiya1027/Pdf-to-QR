@@ -14,13 +14,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/uploads", express.static("uploads"));
 
 app.use("/pdf", pdfRoutes);
-app.use("/", () => {
-  console.log(`Server running on port http://localhost:${PORT}/pdf`);
-});
 
 sequelize.sync().then(() => {
   console.log("Connection has been established successfully.");
   app.listen(PORT, () => {
-    console.log(`Server running on port http://localhost:${PORT}/pdf`);
+    console.log(`Server running on port ${PORT}/pdf`);
   });
 });
