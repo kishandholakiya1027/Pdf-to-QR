@@ -10,7 +10,7 @@ const fs = require("fs");
   return filename;
 }
 
-const uploadsDirectory = "./uploads";
+const uploadsDirectory = "./cert/GetCert";
 if (!fs.existsSync(uploadsDirectory)) {
   fs.mkdirSync(uploadsDirectory);
 }

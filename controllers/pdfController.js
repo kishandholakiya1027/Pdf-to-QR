@@ -3,17 +3,18 @@ const path = require('path');
 require('dotenv').config();
 const Sequelize = require('sequelize');
 const { createFileName } = require( '../config/storege' );
+const { generateRandomNumber } = require( '../utils/idGenaret' );
 
-const PORT = process.env.PORT || 5000;
 const url = process.env.URL;
 const uploadPDF = async (req, res) => {
   try {
-    console.log("req.file", req.file);
+    
     const { title, description } = req.body;
     const fileName = createFileName( req.file)
-    const fileURL = `${url}/uploads/${fileName}`;
-
-    const pdf = await PDFFile.create({ fileName, fileURL, title, description, status: 'Active', isDeleted: false });
+    const fileURL = `${url}/cert/GetCert/${fileName}`;
+    const fileID = await generateRandomNumber( 6 );
+    console.log("req.file", fileID);
+    const pdf = await PDFFile.create({fileID, fileName, fileURL, title, description, status: 'Active', isDeleted: false });
     res.status(200).json({ success: true, message: 'PDF file uploaded successfully.', fileURL, data: pdf });
   } catch (error) {
     console.error(error);
@@ -46,7 +47,7 @@ const getPDFDetails = async (req, res) => {
         return res.status(404).json({ success: false, message: 'PDF file not found or deleted' });
       }
 
-      const filePath = path.join(__dirname, '..', 'uploads', pdf.fileName);
+      const filePath = path.join(__dirname, '..', 'cert/GetCert', pdf.fileName);
 
       res.setHeader('Content-Type', 'application/pdf');
 
@@ -57,6 +58,26 @@ const getPDFDetails = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error retrieving PDF file.' });
   }
 };
+
+const getPDFByFileID = async (req, res) => {
+  try {
+    const fileID = req.query.id;
+    console.log("fileID", fileID);
+    const pdf = await PDFFile.findOne({ where: { fileID: fileID, isDeleted: false } });
+    
+    if (!pdf) {
+      return res.status(404).json({ success: false, message: 'PDF file not found or deleted' });
+    }    
+    const filePath = path.join(__dirname, '..', 'cert/GetCert', pdf.fileName);
+    res.setHeader('Content-Type', 'application/pdf');
+
+    return res.sendFile(filePath);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Error retrieving PDF file.' });
+  }
+};
+
 
 const updatePDFDetails = async (req, res) => {
   const { id } = req.params;
@@ -127,4 +148,4 @@ const getPDFsByTitle = async (req, res) => {
 };
 
 
-module.exports = { uploadPDF, getPDFDetails, updatePDFDetails, deletePDF, getPDFsByTitle };
+module.exports = { uploadPDF, getPDFDetails, getPDFByFileID,updatePDFDetails, deletePDF, getPDFsByTitle };

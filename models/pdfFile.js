@@ -7,6 +7,10 @@ const PDFFile = sequelize.define('PDFFile', {
     primaryKey: true,
     autoIncrement: true,
   },
+  fileID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   fileName: {
     type: DataTypes.STRING,
     allowNull: false,
