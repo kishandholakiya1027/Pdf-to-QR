@@ -69,8 +69,7 @@ const getPDFDetails = async (req, res) => {
           .json({ success: false, message: "PDF file not found or deleted" });
       }
 
-      const filePath = path.join(__dirname, "..", "cert/GetCert", pdf.fileName);
-
+      const filePath = path.join(__dirname, "../config/cert", "GetCert", pdf.fileName);
       res.setHeader("Content-Type", "application/pdf");
 
       res.sendFile(filePath);
