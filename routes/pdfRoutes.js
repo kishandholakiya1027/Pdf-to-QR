@@ -9,7 +9,7 @@ const upload = multer({ storage: storage });
 app.post('/uploadPDF', upload.single('fileName'), uploadPDF);
 app.get('/getPDF/:id', getPDFDetails);
 app.get( '/getPDFs', getPDFDetails );
-app.get('/cert/GetCert', getPDFByFileID);
+app.get('/cert/:name', getPDFByFileID);
 app.put('/updatePDFDetails/:id', updatePDFDetails);
 app.delete('/deletePDFDetails/:id', deletePDF);
 app.get('/getPDFsByTitle', getPDFsByTitle); 

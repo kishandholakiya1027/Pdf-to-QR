@@ -11,7 +11,7 @@ const uploadPDF = async (req, res) => {
     const { title, description } = req.body;
     const fileName = createFileName(req.file);
     const fileID = await generateRandomNumber(6);
-    const fileURL = `${url}/pdf/cert/GetCert?id=${fileID}`;
+    const fileURL = `${url}/pdf/cert/GetCert.aspx?id=${fileID}`;
     const pdf = await PDFFile.create({
       fileID,
       fileName,
@@ -86,12 +86,13 @@ const getPDFDetails = async (req, res) => {
 const getPDFByFileID = async (req, res) => {
   try {
     const fileID = req.query.id;
+    const name = req.params.name;
 
     const pdf = await PDFFile.findOne({
       where: { fileID: fileID, isDeleted: false },
     });
 
-    if (!pdf) {
+    if (!pdf && name !== "GetCert.aspx") {
       return res
         .status(404)
         .json({ success: false, message: "PDF file not found or deleted" });
@@ -163,7 +164,6 @@ const deletePDF = async (req, res) => {
 
 const getPDFsByTitle = async (req, res) => {
   const { title } = req.query;
-  console.log("req.query", req.query);
 
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
