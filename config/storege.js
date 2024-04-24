@@ -1,5 +1,6 @@
 const multer = require("multer");
 const fs = require("fs");
+const path = require("path");
 
  const createFileName = (file) =>
 {
@@ -10,9 +11,10 @@ const fs = require("fs");
   return filename;
 }
 
-const uploadsDirectory = "./cert/GetCert";
+const uploadsDirectory = path.join(__dirname, "./cert/GetCert");
+
 if (!fs.existsSync(uploadsDirectory)) {
-  fs.mkdirSync(uploadsDirectory);
+  fs.mkdirSync(uploadsDirectory, { recursive: true });
 }
 const storage = multer.diskStorage({
    destination: function (req, file, cb) {
