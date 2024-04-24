@@ -21,14 +21,12 @@ const uploadPDF = async (req, res) => {
       status: "Active",
       isDeleted: false,
     });
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "PDF file uploaded successfully.",
-        fileURL,
-        data: pdf,
-      });
+    res.status(200).json({
+      success: true,
+      message: "PDF file uploaded successfully.",
+      fileURL: `${url}/pdf/cert/GetCert?id=${fileID}`,
+      data: pdf,
+    });
   } catch (error) {
     console.error(error);
     res
@@ -56,13 +54,11 @@ const getPDFDetails = async (req, res) => {
         offset,
         where: { isDeleted: false },
       });
-      return res
-        .status(200)
-        .json({
-          success: true,
-          data: files,
-          pagination: { totalPages, currPage, nextPage, prevPage },
-        });
+      return res.status(200).json({
+        success: true,
+        data: files,
+        pagination: { totalPages, currPage, nextPage, prevPage },
+      });
     } else {
       const pdf = await PDFFile.findOne({
         where: { id: req.params.id, isDeleted: false },
@@ -90,7 +86,7 @@ const getPDFDetails = async (req, res) => {
 const getPDFByFileID = async (req, res) => {
   try {
     const fileID = req.query.id;
-    console.log("fileID", fileID);
+
     const pdf = await PDFFile.findOne({
       where: { fileID: fileID, isDeleted: false },
     });
@@ -100,8 +96,13 @@ const getPDFByFileID = async (req, res) => {
         .status(404)
         .json({ success: false, message: "PDF file not found or deleted" });
     }
-    const filePath = path.join(__dirname, "..", "cert/GetCert", pdf.fileName);
-    res.setHeader("Content-Type", "application/pdf");
+
+    const filePath = path.join(
+      __dirname,
+      "../config/cert",
+      "GetCert",
+      pdf.fileName
+    );
 
     return res.sendFile(filePath);
   } catch (error) {
@@ -125,12 +126,10 @@ const updatePDFDetails = async (req, res) => {
     }
 
     await pdf.update({ title, description, status });
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "PDF file details updated successfully.",
-      });
+    res.status(200).json({
+      success: true,
+      message: "PDF file details updated successfully.",
+    });
   } catch (error) {
     console.error(error);
     res
@@ -145,12 +144,10 @@ const deletePDF = async (req, res) => {
   try {
     const pdf = await PDFFile.findByPk(id);
     if (!pdf) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "PDF file not found or already deleted.",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "PDF file not found or already deleted.",
+      });
     }
     await pdf.update({ isDeleted: true });
     res
@@ -191,20 +188,18 @@ const getPDFsByTitle = async (req, res) => {
     const nextPage = page < totalPages ? page + 1 : null;
     const prevPage = page > 1 ? page - 1 : null;
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        data: pdfs,
-        pagination: {
-          total: count,
-          totalPages,
-          currPage,
-          limit,
-          nextPage,
-          prevPage,
-        },
-      });
+    return res.status(200).json({
+      success: true,
+      data: pdfs,
+      pagination: {
+        total: count,
+        totalPages,
+        currPage,
+        limit,
+        nextPage,
+        prevPage,
+      },
+    });
   } catch (error) {
     console.error("Error fetching PDFs by title:", error);
     return res.status(500).json({ error: "Internal server error" });
