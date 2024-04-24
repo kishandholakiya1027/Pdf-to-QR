@@ -10,8 +10,8 @@ const uploadPDF = async (req, res) => {
   try {
     const { title, description } = req.body;
     const fileName = createFileName(req.file);
-    const fileURL = `${url}/pdf/cert/GetCert?id=${fileID}`;
     const fileID = await generateRandomNumber(6);
+    const fileURL = `${url}/pdf/cert/GetCert?id=${fileID}`;
     const pdf = await PDFFile.create({
       fileID,
       fileName,
@@ -24,7 +24,7 @@ const uploadPDF = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "PDF file uploaded successfully.",
-      fileURL,
+
       data: pdf,
     });
   } catch (error) {
